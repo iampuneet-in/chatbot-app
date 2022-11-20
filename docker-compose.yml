@@ -1,0 +1,23 @@
+version: '1'
+services:
+  nginx:
+    restart: always
+    build:
+      dockerfile: Dockerfile.dev
+      context: ./nginx
+    ports:
+      - '${NGINX_PORT}:80'
+    depends_on:
+      - api
+  api:
+    build:
+      dockerfile: Dockerfile.dev
+      context: .
+    volumes:
+      - /usr/src/app/node_modules
+      - .:/usr/src/app
+    restart: unless-stopped
+    ports:
+      - $NODE_LOCAL_PORT:$NODE_DOCKER_PORT
+    stdin_open: true
+    tty: true
